@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const {mkdir, readdir, copyFile, unlink} = require('node:fs/promises');
 const path = require('path');
 
@@ -18,6 +19,17 @@ async function copyFolder() {
 	for (const file of files) {
 		await copyFile(`files/${file}`, `files-copy/${file}`, 0)
 	}
+=======
+const fs = require("fs")
+
+let pathCurrent = __dirname + "/files"
+let nameFile = pathCurrent.split("/").pop()
+
+fs.mkdir(__dirname + `/${nameFile}-copy`, () => copyFiles(pathCurrent))
+
+function copyFiles(pathFolder) {
+	fs.copyFile('README.md', 'README1.md', () => {});
+>>>>>>> origin/main
 }
 
 
