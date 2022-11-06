@@ -1,35 +1,31 @@
-<<<<<<< HEAD
 const {mkdir, readdir, copyFile, unlink} = require('node:fs/promises');
 const path = require('path');
 
-copyFolder()
+const elFrom = path.join(__dirname, "files");
+const elTo = path.join(__dirname, "files");
 
-async function copyFolder() {
-	const folderCopy = await readdir(__dirname);
-	if (folderCopy.includes("files-copy")) {
-		const filesOld = await readdir("files-copy");
-		for (const fileOld of filesOld) {
-			await unlink(path.join("files-copy", fileOld))
-		}
+copyFolder(elFrom, elTo)
+
+async function copyFolder(elFrom, elTo) {
+	let elName = elFrom.split("/").pop()
+	if (elFrom === elTo) {
+		let newName = elName + "-copy"
+		elTo = elTo.replace(elName, newName)
+		await mkdir(elTo, {recursive: true});
 	} else {
-		await mkdir("files-copy", { recursive: true });
+		await mkdir(elTo, {recursive: true});
 	}
 
-	const files = await readdir("files");
+	const files = await readdir(elFrom, {withFileTypes: true});
 	for (const file of files) {
-		await copyFile(`files/${file}`, `files-copy/${file}`, 0)
+		let currentPathFrom = path.join(elFrom, file.name)
+		let currentPathTo = path.join(elTo, file.name)
+		if (file.isDirectory()) {
+			await copyFolder(currentPathFrom, currentPathTo)
+		} else  {
+			await copyFile(currentPathFrom, currentPathTo, 0)
+		}
 	}
-=======
-const fs = require("fs")
-
-let pathCurrent = __dirname + "/files"
-let nameFile = pathCurrent.split("/").pop()
-
-fs.mkdir(__dirname + `/${nameFile}-copy`, () => copyFiles(pathCurrent))
-
-function copyFiles(pathFolder) {
-	fs.copyFile('README.md', 'README1.md', () => {});
->>>>>>> origin/main
 }
 
 
