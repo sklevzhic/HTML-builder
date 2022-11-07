@@ -11,7 +11,7 @@ async function buildProject() {
 	for (let file of files) {
 		if (file.name.includes(".css") && !file.isDirectory()) {
 			let data = fs.createReadStream(path.join(__dirname, "styles", file.name));
-			data.on("data", (chunk => writeableStream.write(chunk.toString())))
+			data.on("data", (chunk => writeableStream.write(chunk + "\n")))
 		}
 	}
 }

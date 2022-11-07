@@ -1,10 +1,21 @@
 const {mkdir, readdir, copyFile, unlink} = require('node:fs/promises');
 const path = require('path');
+const {access, rmdir} = require("fs/promises");
 
 const elFrom = path.join(__dirname, "files");
 const elTo = path.join(__dirname, "files");
 
-copyFolder(elFrom, elTo)
+(async () => {
+	let pathCopy = path.join(__dirname, "files-copy")
+	try {
+		await access(pathCopy)
+		await clearFolder(pathCopy)
+		await copyFolder(elFrom, elTo)
+	} catch {
+		await copyFolder(elFrom, elTo)
+	}
+})()
+
 
 async function copyFolder(elFrom, elTo) {
 	let elName = elFrom.split("/").pop()
@@ -22,8 +33,20 @@ async function copyFolder(elFrom, elTo) {
 		let currentPathTo = path.join(elTo, file.name)
 		if (file.isDirectory()) {
 			await copyFolder(currentPathFrom, currentPathTo)
-		} else  {
+		} else {
 			await copyFile(currentPathFrom, currentPathTo, 0)
+		}
+	}
+}
+async function clearFolder(pathTemp) {
+
+	const files = await readdir(pathTemp, {withFileTypes: true});
+
+	for (const file of files) {
+		if (file.isDirectory()) {
+			await clearFolder(path.join(pathTemp, file.name))
+		} else {
+			await unlink(path.join(pathTemp, file.name))
 		}
 	}
 }
