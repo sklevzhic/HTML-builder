@@ -1,6 +1,6 @@
 const {mkdir, readdir, copyFile, unlink} = require('node:fs/promises');
 const path = require('path');
-const {access, rmdir} = require("fs/promises");
+const {access, rm} = require("fs/promises");
 
 const elFrom = path.join(__dirname, "files");
 const elTo = path.join(__dirname, "files");
@@ -10,6 +10,7 @@ const elTo = path.join(__dirname, "files");
 	try {
 		await access(pathCopy)
 		await clearFolder(pathCopy)
+		await rm(pathCopy, {recursive: true})
 		await copyFolder(elFrom, elTo)
 	} catch {
 		await copyFolder(elFrom, elTo)
@@ -39,7 +40,7 @@ async function copyFolder(elFrom, elTo) {
 	}
 }
 async function clearFolder(pathTemp) {
-
+	console.log("a")
 	const files = await readdir(pathTemp, {withFileTypes: true});
 
 	for (const file of files) {
